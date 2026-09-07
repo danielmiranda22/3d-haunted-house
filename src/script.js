@@ -2,8 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
-import { and, depth, threshold } from "three/tsl";
-import { Plane, PlaneGeometry } from "three/webgpu";
 
 /**
  * Base
@@ -64,7 +62,7 @@ const doorMeasurments = {
   height: 2,
 };
 const door = new THREE.Mesh(
-  new PlaneGeometry(doorMeasurments.width, doorMeasurments.height),
+  new THREE.PlaneGeometry(doorMeasurments.width, doorMeasurments.height),
   new THREE.MeshStandardMaterial({ color: "red" }),
 );
 door.position.y = doorMeasurments.height / 2;
@@ -114,9 +112,12 @@ const graveMaterial = new THREE.MeshStandardMaterial();
 for (let i = 0; i < 30; i++) {
   const angle = Math.random() * Math.PI * 2;
   const radius = 3 + Math.random() * 4;
-  const x = Math.sin(angle) * 4;
-  const z = Math.cos(angle) * 4;
+
+  const x = Math.sin(angle) * radius;
+  const z = Math.cos(angle) * radius;
+
   const grave = new THREE.Mesh(gravesGeometry, graveMaterial);
+
   grave.position.x = x;
   grave.position.y = Math.random() * 0.4;
   grave.position.z = z;
