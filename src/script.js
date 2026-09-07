@@ -64,6 +64,40 @@ const wallNormalTexture = textureLoader.load(
   "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.jpg",
 );
 
+// Roof Texture
+const roofColorTexture = textureLoader.load("./roof/roof_slates_02_1k/roof_slates_02_diff_1k.jpg");
+roofColorTexture.repeat.set(3, 1);
+roofColorTexture.wrapS = THREE.RepeatWrapping;
+roofColorTexture.colorSpace = THREE.SRGBColorSpace;
+const roofARMTexture = textureLoader.load("./roof/roof_slates_02_1k/roof_slates_02_arm_1k.jpg");
+roofARMTexture.repeat.set(3, 1);
+roofARMTexture.wrapS = THREE.RepeatWrapping;
+const roofNormalTexture = textureLoader.load(
+  "./roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.jpg",
+);
+roofNormalTexture.repeat.set(3, 1);
+roofNormalTexture.wrapS = THREE.RepeatWrapping;
+
+// Buches Texture
+const bushColorTexture = textureLoader.load(
+  "./bush/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.jpg",
+);
+bushColorTexture.colorSpace = THREE.SRGBColorSpace;
+bushColorTexture.repeat.set(2, 1);
+bushColorTexture.wrapS = THREE.RepeatWrapping;
+
+const bushARMTexture = textureLoader.load(
+  "./bush/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.jpg",
+);
+bushARMTexture.repeat.set(2, 1);
+bushARMTexture.wrapS = THREE.RepeatWrapping;
+
+const bushNormalTexture = textureLoader.load(
+  "./bush/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.jpg",
+);
+bushNormalTexture.repeat.set(2, 1);
+bushNormalTexture.wrapS = THREE.RepeatWrapping;
+
 /**
  * House
  */
@@ -126,7 +160,13 @@ const roofMesurements = {
 };
 const roof = new THREE.Mesh(
   new THREE.ConeGeometry(roofMesurements.radius, roofMesurements.height, roofMesurements.segments),
-  new THREE.MeshStandardMaterial(),
+  new THREE.MeshStandardMaterial({
+    map: roofColorTexture,
+    aoMap: roofARMTexture,
+    roughnessMap: roofARMTexture,
+    metalnessMap: roofARMTexture,
+    normalMap: roofNormalTexture,
+  }),
 );
 roof.position.y += wallsMesurements.height + roofMesurements.height / 2;
 roof.rotation.y = Math.PI * 0.25;
@@ -147,7 +187,13 @@ house.add(door);
 
 // Bushes
 const bushGeometry = new THREE.SphereGeometry(1, 16, 16);
-const bushMaterial = new THREE.MeshStandardMaterial();
+const bushMaterial = new THREE.MeshStandardMaterial({
+  map: bushColorTexture,
+  aoMap: bushARMTexture,
+  roughnessMap: bushARMTexture,
+  metalnessMap: bushARMTexture,
+  normalMap: bushNormalTexture,
+});
 const bush1 = new THREE.Mesh(bushGeometry, bushMaterial);
 bush1.scale.set(0.5, 0.5, 0.5);
 bush1.position.set(0.8, 0.2, 2.2);
