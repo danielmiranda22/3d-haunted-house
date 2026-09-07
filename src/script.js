@@ -65,13 +65,44 @@ const doorMeasurments = {
 };
 const door = new THREE.Mesh(
   new PlaneGeometry(doorMeasurments.width, doorMeasurments.height),
-  new THREE.MeshStandardMaterial({
-    color: "red",
-  }),
+  new THREE.MeshStandardMaterial({ color: "red" }),
 );
 door.position.y = doorMeasurments.height / 2;
 door.position.z = wallsMesurements.width / 2 + 0.01;
 house.add(door);
+
+// Bushes
+const bushGeometry = new THREE.SphereGeometry(1, 16, 16);
+const bushMaterial = new THREE.MeshStandardMaterial();
+const bush1 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush1.scale.set(0.5, 0.5, 0.5);
+bush1.position.set(0.8, 0.2, 2.2);
+
+const bush2 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush2.scale.set(0.25, 0.25, 0.25);
+bush2.position.set(1.4, 0.1, 2.1);
+
+const bush3 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush3.scale.set(0.4, 0.4, 0.4);
+bush3.position.set(-0.8, 0.1, 2.2);
+
+const bush4 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush4.scale.set(0.15, 0.15, 0.15);
+bush4.position.set(-1, 0.05, 2.6);
+
+const bush5 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush5.scale.set(0.15, 0.15, 0.15);
+bush5.position.set(-2, 0.05, 2.6);
+
+const bush6 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush6.scale.set(0.25, 0.25, 0.25);
+bush6.position.set(-2, 0.05, -2.0);
+
+const bush7 = new THREE.Mesh(bushGeometry, bushMaterial);
+bush7.scale.set(0.55, 0.5, 0.55);
+bush7.position.set(2.0, 0.1, -2.1);
+
+house.add(bush1, bush2, bush3, bush4, bush5, bush6, bush7);
 
 /**
  * Lights
