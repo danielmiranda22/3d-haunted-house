@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
-import { depth } from "three/tsl";
+import { depth, threshold } from "three/tsl";
+import { Plane, PlaneGeometry } from "three/webgpu";
 
 /**
  * Base
@@ -56,6 +57,21 @@ const roof = new THREE.Mesh(
 roof.position.y += wallsMesurements.height + roofMesurements.height / 2;
 roof.rotation.y = Math.PI * 0.25;
 house.add(roof);
+
+// Door
+const doorMeasurments = {
+  width: 2,
+  height: 2,
+};
+const door = new THREE.Mesh(
+  new PlaneGeometry(doorMeasurments.width, doorMeasurments.height),
+  new THREE.MeshStandardMaterial({
+    color: "red",
+  }),
+);
+door.position.y = doorMeasurments.height / 2;
+door.position.z = wallsMesurements.width / 2 + 0.01;
+house.add(door);
 
 /**
  * Lights
