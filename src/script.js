@@ -26,6 +26,13 @@ const sphere = new THREE.Mesh(
 scene.add(sphere);
 
 /**
+ * Floor
+ */
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial());
+floor.rotation.x = -Math.PI * 0.5;
+scene.add(floor);
+
+/**
  * Lights
  */
 // Ambient light
@@ -36,6 +43,10 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight("#ffffff", 1.5);
 directionalLight.position.set(3, 2, -8);
 scene.add(directionalLight);
+
+const directionalLightHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+directionalLightHelper.visible = true;
+scene.add(directionalLightHelper);
 
 /**
  * Sizes
