@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
-import { depth, threshold } from "three/tsl";
+import { and, depth, threshold } from "three/tsl";
 import { Plane, PlaneGeometry } from "three/webgpu";
 
 /**
@@ -103,6 +103,30 @@ bush7.scale.set(0.55, 0.5, 0.55);
 bush7.position.set(2.0, 0.1, -2.1);
 
 house.add(bush1, bush2, bush3, bush4, bush5, bush6, bush7);
+
+// Graves
+const graves = new THREE.Group();
+scene.add(graves);
+
+const gravesGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2);
+const graveMaterial = new THREE.MeshStandardMaterial();
+
+for (let i = 0; i < 30; i++) {
+  const angle = Math.random() * Math.PI * 2;
+  const radius = 3 + Math.random() * 4;
+  const x = Math.sin(angle) * 4;
+  const z = Math.cos(angle) * 4;
+  const grave = new THREE.Mesh(gravesGeometry, graveMaterial);
+  grave.position.x = x;
+  grave.position.y = Math.random() * 0.4;
+  grave.position.z = z;
+
+  grave.rotation.x = (Math.random() - 0.5) * 0.4;
+  grave.rotation.y = (Math.random() - 0.5) * 0.4;
+  grave.rotation.z = (Math.random() - 0.5) * 0.4;
+
+  graves.add(grave);
+}
 
 /**
  * Lights
