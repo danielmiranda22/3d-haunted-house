@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
+import { depth } from "three/tsl";
 
 /**
  * Base
@@ -18,19 +19,43 @@ const scene = new THREE.Scene();
 /**
  * House
  */
-// Temporary sphere
-const sphere = new THREE.Mesh(
-  new THREE.SphereGeometry(1, 32, 32),
-  new THREE.MeshStandardMaterial({ roughness: 0.7 }),
-);
-scene.add(sphere);
-
 /**
  * Floor
  */
 const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial());
 floor.rotation.x = -Math.PI * 0.5;
 scene.add(floor);
+
+// House container
+const house = new THREE.Group();
+scene.add(house);
+
+// Walls
+const wallsMesurements = {
+  width: 4,
+  height: 2.5,
+  depth: 4,
+};
+const walls = new THREE.Mesh(
+  new THREE.BoxGeometry(wallsMesurements.width, wallsMesurements.height, wallsMesurements.depth),
+  new THREE.MeshStandardMaterial(),
+);
+walls.position.y += wallsMesurements.height / 2; // the walls were buried because the origin of geometry is center, so need to move up
+house.add(walls);
+
+// Roof
+const roofMesurements = {
+  radius: 3.5,
+  height: 2,
+  segments: 4.5,
+};
+const roof = new THREE.Mesh(
+  new THREE.ConeGeometry(roofMesurements.radius, roofMesurements.height, roofMesurements.segments),
+  new THREE.MeshStandardMaterial(),
+);
+roof.position.y += wallsMesurements.height + roofMesurements.height / 2;
+roof.rotation.y = Math.PI * 0.25;
+house.add(roof);
 
 /**
  * Lights
@@ -43,10 +68,6 @@ scene.add(ambientLight);
 const directionalLight = new THREE.DirectionalLight("#ffffff", 1.5);
 directionalLight.position.set(3, 2, -8);
 scene.add(directionalLight);
-
-const directionalLightHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-directionalLightHelper.visible = true;
-scene.add(directionalLightHelper);
 
 /**
  * Sizes
