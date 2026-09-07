@@ -59,15 +59,29 @@ floorDisplacementTexture.wrapT = THREE.RepeatWrapping;
  * Floor
  */
 const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(20, 20),
+  new THREE.PlaneGeometry(20, 20, 100, 100),
   new THREE.MeshStandardMaterial({
     transparent: true,
     alphaMap: floorAlphaTexture,
     map: floorColorTexture,
+    aoMap: floorARMTexture,
+    roughnessMap: floorARMTexture,
+    metalnessMap: floorARMTexture,
+    normalMap: floorNormalTexture,
+    displacementMap: floorDisplacementTexture,
+    displacementScale: 0.3,
+    displacementBias: -0.2,
   }),
 );
 floor.rotation.x = -Math.PI * 0.5;
 scene.add(floor);
+gui
+  .add(floor.material, "displacementScale")
+  .min(0)
+  .max(1)
+  .step(0.01)
+  .name("floorDisplacementScale");
+gui.add(floor.material, "displacementBias").min(-1).max(1).step(0.01).name("floorDisplacementBias");
 
 // House container
 const house = new THREE.Group();
