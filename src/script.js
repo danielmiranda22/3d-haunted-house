@@ -16,12 +16,56 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 /**
+ * Textures
+ */
+const textureLoader = new THREE.TextureLoader();
+
+// Floor Texture
+const floorAlphaTexture = textureLoader.load("./floor/alpha.jpg");
+
+const floorColorTexture = textureLoader.load(
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.jpg",
+);
+floorColorTexture.repeat.set(8, 8, 8);
+floorColorTexture.wrapS = THREE.RepeatWrapping;
+floorColorTexture.wrapT = THREE.RepeatWrapping;
+floorColorTexture.colorSpace = THREE.SRGBColorSpace;
+
+const floorARMTexture = textureLoader.load(
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.jpg",
+);
+floorARMTexture.repeat.set(8, 8, 8);
+floorARMTexture.wrapS = THREE.RepeatWrapping;
+floorARMTexture.wrapT = THREE.RepeatWrapping;
+
+const floorNormalTexture = textureLoader.load(
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.jpg",
+);
+floorNormalTexture.repeat.set(8, 8, 8);
+floorNormalTexture.wrapS = THREE.RepeatWrapping;
+floorNormalTexture.wrapT = THREE.RepeatWrapping;
+
+const floorDisplacementTexture = textureLoader.load(
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.jpg",
+);
+floorDisplacementTexture.repeat.set(8, 8, 8);
+floorDisplacementTexture.wrapS = THREE.RepeatWrapping;
+floorDisplacementTexture.wrapT = THREE.RepeatWrapping;
+
+/**
  * House
  */
 /**
  * Floor
  */
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial());
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshStandardMaterial({
+    transparent: true,
+    alphaMap: floorAlphaTexture,
+    map: floorColorTexture,
+  }),
+);
 floor.rotation.x = -Math.PI * 0.5;
 scene.add(floor);
 
