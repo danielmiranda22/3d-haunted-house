@@ -432,6 +432,11 @@ sky.scale.set(100, 100, 100);
 scene.add(sky);
 
 /**
+ * Fog
+ */
+scene.fog = new THREE.FogExp2("#02343f", 0.1);
+
+/**
  * Animate
  */
 const timer = new Timer();
