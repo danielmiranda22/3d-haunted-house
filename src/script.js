@@ -468,6 +468,13 @@ const tick = () => {
   ghost3.position.y =
     Math.sin(ghost3Angle) * Math.sin(ghost3Angle * 2.34) * Math.sin(ghost3Angle * 3.45);
 
+  // Door flickering effect (layered sine waves = irregular flicker, not a clean pulse)
+  const pulse1 = Math.sin(elapsedTime * 10) * 0.5; // slow, big swing
+  const pulse2 = Math.sin(elapsedTime * 23.5) * 0.15; // faster, smaller wobble
+  const pulse3 = Math.sin(elapsedTime * 71.1) * 0.05; // fast, tiny jitter
+
+  doorLight.intensity = 4 + pulse1 + pulse2 + pulse3;
+
   // Update controls
   controls.update();
 
