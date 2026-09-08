@@ -1,8 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
-import { Sky } from "three/examples/jsm/Addons.js";
+import { Sky, Timer } from "three/examples/jsm/Addons.js";
 
 /**
  * Base
@@ -27,7 +26,7 @@ const floorAlphaTexture = textureLoader.load("./floor/alpha.webp");
 const floorColorTexture = textureLoader.load(
   "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.webp",
 );
-floorColorTexture.repeat.set(8, 8, 8);
+floorColorTexture.repeat.set(8, 8);
 floorColorTexture.wrapS = THREE.RepeatWrapping;
 floorColorTexture.wrapT = THREE.RepeatWrapping;
 floorColorTexture.colorSpace = THREE.SRGBColorSpace;
@@ -35,21 +34,21 @@ floorColorTexture.colorSpace = THREE.SRGBColorSpace;
 const floorARMTexture = textureLoader.load(
   "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.webp",
 );
-floorARMTexture.repeat.set(8, 8, 8);
+floorARMTexture.repeat.set(8, 8);
 floorARMTexture.wrapS = THREE.RepeatWrapping;
 floorARMTexture.wrapT = THREE.RepeatWrapping;
 
 const floorNormalTexture = textureLoader.load(
   "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.webp",
 );
-floorNormalTexture.repeat.set(8, 8, 8);
+floorNormalTexture.repeat.set(8, 8);
 floorNormalTexture.wrapS = THREE.RepeatWrapping;
 floorNormalTexture.wrapT = THREE.RepeatWrapping;
 
 const floorDisplacementTexture = textureLoader.load(
   "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.webp",
 );
-floorDisplacementTexture.repeat.set(8, 8, 8);
+floorDisplacementTexture.repeat.set(8, 8);
 floorDisplacementTexture.wrapS = THREE.RepeatWrapping;
 floorDisplacementTexture.wrapT = THREE.RepeatWrapping;
 
@@ -162,13 +161,13 @@ const house = new THREE.Group();
 scene.add(house);
 
 // Walls
-const wallsMesurements = {
+const wallsMeasurements = {
   width: 4,
   height: 2.5,
   depth: 4,
 };
 const walls = new THREE.Mesh(
-  new THREE.BoxGeometry(wallsMesurements.width, wallsMesurements.height, wallsMesurements.depth),
+  new THREE.BoxGeometry(wallsMeasurements.width, wallsMeasurements.height, wallsMeasurements.depth),
   new THREE.MeshStandardMaterial({
     map: wallColorTexture,
     aoMap: wallARMTexture,
@@ -177,17 +176,21 @@ const walls = new THREE.Mesh(
     normalMap: wallNormalTexture,
   }),
 );
-walls.position.y += wallsMesurements.height / 2; // the walls were buried because the origin of geometry is center, so need to move up
+walls.position.y += wallsMeasurements.height / 2; // the walls were buried because the origin of geometry is center, so need to move up
 house.add(walls);
 
 // Roof
-const roofMesurements = {
+const roofMeasurements = {
   radius: 3.5,
   height: 1.5,
-  segments: 4.5,
+  segments: 4,
 };
 const roof = new THREE.Mesh(
-  new THREE.ConeGeometry(roofMesurements.radius, roofMesurements.height, roofMesurements.segments),
+  new THREE.ConeGeometry(
+    roofMeasurements.radius,
+    roofMeasurements.height,
+    roofMeasurements.segments,
+  ),
   new THREE.MeshStandardMaterial({
     map: roofColorTexture,
     aoMap: roofARMTexture,
@@ -196,17 +199,17 @@ const roof = new THREE.Mesh(
     normalMap: roofNormalTexture,
   }),
 );
-roof.position.y += wallsMesurements.height + roofMesurements.height / 2;
+roof.position.y += wallsMeasurements.height + roofMeasurements.height / 2;
 roof.rotation.y = Math.PI * 0.25;
 house.add(roof);
 
 // Door
-const doorMeasurments = {
+const doorMeasurements = {
   width: 2.2,
   height: 2.2,
 };
 const door = new THREE.Mesh(
-  new THREE.PlaneGeometry(doorMeasurments.width, doorMeasurments.height, 100, 100),
+  new THREE.PlaneGeometry(doorMeasurements.width, doorMeasurements.height, 100, 100),
   new THREE.MeshStandardMaterial({
     map: doorColorTexture,
     transparent: true,
@@ -220,8 +223,8 @@ const door = new THREE.Mesh(
     roughnessMap: doorRoughnessTexture,
   }),
 );
-door.position.y = doorMeasurments.height / 2;
-door.position.z = wallsMesurements.width / 2 + 0.01;
+door.position.y = doorMeasurements.height / 2;
+door.position.z = wallsMeasurements.width / 2 + 0.01;
 house.add(door);
 
 // Bushes
