@@ -6,6 +6,9 @@ The project explores the fundamentals of creating a 3D scene in the browser usin
 
 This repository contains the base implementation following the course, along with my own customizations and experiments as the project continues to grow.
 
+🚀 **Live Demo:**  
+https://3d-haunted-house-by-dano.vercel.app/
+
 ![Haunted House](./static/screenshot.png)
 
 ## ✨ Features
