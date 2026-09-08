@@ -98,6 +98,23 @@ const bushNormalTexture = textureLoader.load(
 bushNormalTexture.repeat.set(2, 1);
 bushNormalTexture.wrapS = THREE.RepeatWrapping;
 
+// Graves Texture
+const graveColorTexture = textureLoader.load(
+  "./grave/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.jpg",
+);
+graveColorTexture.colorSpace = THREE.SRGBColorSpace;
+graveColorTexture.repeat.set(0.3, 0.4);
+
+const graveARMTexture = textureLoader.load(
+  "./grave/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.jpg",
+);
+graveARMTexture.repeat.set(0.3, 0.4);
+
+const graveNormalTexture = textureLoader.load(
+  "./grave/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.jpg",
+);
+graveNormalTexture.repeat.set(0.3, 0.4);
+
 /**
  * House
  */
@@ -188,6 +205,7 @@ house.add(door);
 // Bushes
 const bushGeometry = new THREE.SphereGeometry(1, 16, 16);
 const bushMaterial = new THREE.MeshStandardMaterial({
+  color: "#ffee00",
   map: bushColorTexture,
   aoMap: bushARMTexture,
   roughnessMap: bushARMTexture,
@@ -236,7 +254,13 @@ const graves = new THREE.Group();
 scene.add(graves);
 
 const gravesGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2);
-const graveMaterial = new THREE.MeshStandardMaterial();
+const graveMaterial = new THREE.MeshStandardMaterial({
+  map: graveColorTexture,
+  aoMap: graveARMTexture,
+  roughnessMap: graveARMTexture,
+  metalnessMap: graveARMTexture,
+  normalMap: graveNormalTexture,
+});
 
 for (let i = 0; i < 30; i++) {
   const angle = Math.random() * Math.PI * 2;
