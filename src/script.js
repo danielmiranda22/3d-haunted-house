@@ -22,10 +22,10 @@ const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
 
 // Floor Texture
-const floorAlphaTexture = textureLoader.load("./floor/alpha.jpg");
+const floorAlphaTexture = textureLoader.load("./floor/alpha.webp");
 
 const floorColorTexture = textureLoader.load(
-  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.jpg",
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.webp",
 );
 floorColorTexture.repeat.set(8, 8, 8);
 floorColorTexture.wrapS = THREE.RepeatWrapping;
@@ -33,21 +33,21 @@ floorColorTexture.wrapT = THREE.RepeatWrapping;
 floorColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 const floorARMTexture = textureLoader.load(
-  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.jpg",
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.webp",
 );
 floorARMTexture.repeat.set(8, 8, 8);
 floorARMTexture.wrapS = THREE.RepeatWrapping;
 floorARMTexture.wrapT = THREE.RepeatWrapping;
 
 const floorNormalTexture = textureLoader.load(
-  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.jpg",
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.webp",
 );
 floorNormalTexture.repeat.set(8, 8, 8);
 floorNormalTexture.wrapS = THREE.RepeatWrapping;
 floorNormalTexture.wrapT = THREE.RepeatWrapping;
 
 const floorDisplacementTexture = textureLoader.load(
-  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.jpg",
+  "./floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.webp",
 );
 floorDisplacementTexture.repeat.set(8, 8, 8);
 floorDisplacementTexture.wrapS = THREE.RepeatWrapping;
@@ -55,76 +55,76 @@ floorDisplacementTexture.wrapT = THREE.RepeatWrapping;
 
 // Wall Texture
 const wallColorTexture = textureLoader.load(
-  "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_diff_1k.jpg",
+  "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_diff_1k.webp",
 );
 wallColorTexture.colorSpace = THREE.SRGBColorSpace;
 const wallARMTexture = textureLoader.load(
-  "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_arm_1k.jpg",
+  "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_arm_1k.webp",
 );
 const wallNormalTexture = textureLoader.load(
-  "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.jpg",
+  "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.webp",
 );
 
 // Roof Texture
-const roofColorTexture = textureLoader.load("./roof/roof_slates_02_1k/roof_slates_02_diff_1k.jpg");
+const roofColorTexture = textureLoader.load("./roof/roof_slates_02_1k/roof_slates_02_diff_1k.webp");
 roofColorTexture.repeat.set(3, 1);
 roofColorTexture.wrapS = THREE.RepeatWrapping;
 roofColorTexture.colorSpace = THREE.SRGBColorSpace;
-const roofARMTexture = textureLoader.load("./roof/roof_slates_02_1k/roof_slates_02_arm_1k.jpg");
+const roofARMTexture = textureLoader.load("./roof/roof_slates_02_1k/roof_slates_02_arm_1k.webp");
 roofARMTexture.repeat.set(3, 1);
 roofARMTexture.wrapS = THREE.RepeatWrapping;
 const roofNormalTexture = textureLoader.load(
-  "./roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.jpg",
+  "./roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.webp",
 );
 roofNormalTexture.repeat.set(3, 1);
 roofNormalTexture.wrapS = THREE.RepeatWrapping;
 
 // Buches Texture
 const bushColorTexture = textureLoader.load(
-  "./bush/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.jpg",
+  "./bush/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.webp",
 );
 bushColorTexture.colorSpace = THREE.SRGBColorSpace;
 bushColorTexture.repeat.set(2, 1);
 bushColorTexture.wrapS = THREE.RepeatWrapping;
 
 const bushARMTexture = textureLoader.load(
-  "./bush/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.jpg",
+  "./bush/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.webp",
 );
 bushARMTexture.repeat.set(2, 1);
 bushARMTexture.wrapS = THREE.RepeatWrapping;
 
 const bushNormalTexture = textureLoader.load(
-  "./bush/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.jpg",
+  "./bush/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.webp",
 );
 bushNormalTexture.repeat.set(2, 1);
 bushNormalTexture.wrapS = THREE.RepeatWrapping;
 
 // Graves Texture
 const graveColorTexture = textureLoader.load(
-  "./grave/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.jpg",
+  "./grave/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.webp",
 );
 graveColorTexture.colorSpace = THREE.SRGBColorSpace;
 graveColorTexture.repeat.set(0.3, 0.4);
 
 const graveARMTexture = textureLoader.load(
-  "./grave/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.jpg",
+  "./grave/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.webp",
 );
 graveARMTexture.repeat.set(0.3, 0.4);
 
 const graveNormalTexture = textureLoader.load(
-  "./grave/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.jpg",
+  "./grave/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.webp",
 );
 graveNormalTexture.repeat.set(0.3, 0.4);
 
 // Door Texture
-const doorColorTexture = textureLoader.load("./door/color.jpg");
+const doorColorTexture = textureLoader.load("./door/color.webp");
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
-const doorAlphaTexture = textureLoader.load("./door/alpha.jpg");
-const doorHeightTexture = textureLoader.load("./door/height.jpg");
-const doorNormalTexture = textureLoader.load("./door/normal.jpg");
-const doorAmbientOcclusionTexture = textureLoader.load("./door/ambientOcclusion.jpg");
-const doorMetalnessTexture = textureLoader.load("./door/metalness.jpg");
-const doorRoughnessTexture = textureLoader.load("./door/roughness.jpg");
+const doorAlphaTexture = textureLoader.load("./door/alpha.webp");
+const doorHeightTexture = textureLoader.load("./door/height.webp");
+const doorNormalTexture = textureLoader.load("./door/normal.webp");
+const doorAmbientOcclusionTexture = textureLoader.load("./door/ambientOcclusion.webp");
+const doorMetalnessTexture = textureLoader.load("./door/metalness.webp");
+const doorRoughnessTexture = textureLoader.load("./door/roughness.webp");
 
 /**
  * House
