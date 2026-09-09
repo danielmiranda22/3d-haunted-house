@@ -187,6 +187,25 @@ const doorAmbientOcclusionTexture = textureLoader.load("./door/ambientOcclusion.
 const doorMetalnessTexture = textureLoader.load("./door/metalness.webp");
 const doorRoughnessTexture = textureLoader.load("./door/roughness.webp");
 
+// Fence Texture
+const fenceColorTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_diff_1k.jpg");
+fenceColorTexture.colorSpace = THREE.SRGBColorSpace;
+fenceColorTexture.repeat.set(4.5, 1.6);
+fenceColorTexture.wrapS = THREE.RepeatWrapping;
+fenceColorTexture.wrapT = THREE.RepeatWrapping;
+const fenceARMTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_arm_1k.jpg");
+fenceARMTexture.repeat.set(4.5, 1.6);
+fenceARMTexture.wrapS = THREE.RepeatWrapping;
+fenceARMTexture.wrapT = THREE.RepeatWrapping;
+const fenceNormalTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_nor_gl_1k.jpg");
+fenceNormalTexture.repeat.set(4.5, 1.6);
+fenceNormalTexture.wrapS = THREE.RepeatWrapping;
+fenceNormalTexture.wrapT = THREE.RepeatWrapping;
+const fenceDisplacementTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_disp_1k.jpg");
+fenceDisplacementTexture.repeat.set(4.5, 1.6);
+fenceDisplacementTexture.wrapS = THREE.RepeatWrapping;
+fenceDisplacementTexture.wrapT = THREE.RepeatWrapping;
+
 /**
  * House
  */
@@ -516,6 +535,107 @@ signBoardFolder
   .name("displacementBias");
 
 /**
+ * Fences
+ */
+const fenceMeasurements = {
+  post: {
+    radiusTop: 0.025,
+    radiusBottom: 0.03,
+    height: 0.9,
+  },
+  radius: 8,
+  count: 120,
+};
+
+const fence = new THREE.Group();
+scene.add(fence);
+
+const fencePostGeometry = new THREE.CylinderGeometry(
+  fenceMeasurements.post.radiusTop,
+  fenceMeasurements.post.radiusBottom,
+  fenceMeasurements.post.height,
+);
+
+const fenceMaterial = new THREE.MeshStandardMaterial({
+  map: fenceColorTexture,
+  aoMap: fenceARMTexture,
+  roughnessMap: fenceARMTexture,
+  metalnessMap: fenceARMTexture,
+  normalMap: fenceNormalTexture,
+  displacementMap: fenceDisplacementTexture,
+  displacementScale: 0.018,
+  displacementBias: -0.016,
+});
+
+for (let i = 0; i < fenceMeasurements.count; i++) {
+  // Missing posts — rotted away entirely. ~12% of slots just stay empty.
+  if (Math.random() < 0.12) continue;
+
+  const baseAngle = (i / fenceMeasurements.count) * Math.PI * 2;
+  const angle = baseAngle + (Math.random() - 0.5) * 0.08;
+
+  const x = Math.sin(angle) * fenceMeasurements.radius;
+  const z = Math.cos(angle) * fenceMeasurements.radius;
+
+  const fencePost = new THREE.Mesh(fencePostGeometry, fenceMaterial);
+
+  // Some posts snapped/sunk shorter than others
+  const heightScale = 0.55 + Math.random() * 0.45;
+  fencePost.scale.y = heightScale;
+
+  fencePost.position.x = x;
+  fencePost.position.y = (fenceMeasurements.post.height * heightScale) / 2;
+  fencePost.position.z = z;
+
+  const isVeryLeaning = Math.random() < 0.15;
+  const leanAmount = isVeryLeaning ? 0.3 + Math.random() * 0.3 : (Math.random() - 0.5) * 0.2;
+  const leanDirection = Math.random() * Math.PI * 2;
+
+  fencePost.rotation.x = Math.cos(leanDirection) * leanAmount;
+  fencePost.rotation.z = Math.sin(leanDirection) * leanAmount;
+
+  fence.add(fencePost);
+}
+
+const fenceFolder = gui.addFolder("Fence");
+fenceFolder
+  .add(fenceColorTexture.repeat, "x")
+  .min(0.1)
+  .max(10)
+  .step(0.1)
+  .name("repeatX")
+  .onChange((v) => {
+    fenceColorTexture.repeat.x = v;
+    fenceARMTexture.repeat.x = v;
+    fenceNormalTexture.repeat.x = v;
+    fenceDisplacementTexture.repeat.x = v;
+  });
+fenceFolder
+  .add(fenceColorTexture.repeat, "y")
+  .min(0.1)
+  .max(10)
+  .step(0.1)
+  .name("repeatY")
+  .onChange((v) => {
+    fenceColorTexture.repeat.y = v;
+    fenceARMTexture.repeat.y = v;
+    fenceNormalTexture.repeat.y = v;
+    fenceDisplacementTexture.repeat.y = v;
+  });
+fenceFolder
+  .add(fenceMaterial, "displacementScale")
+  .min(0)
+  .max(0.1)
+  .step(0.001)
+  .name("displacementScale");
+fenceFolder
+  .add(fenceMaterial, "displacementBias")
+  .min(-0.1)
+  .max(0.1)
+  .step(0.001)
+  .name("displacementBias");
+
+/**
  * Lights
  */
 // Ambient light
@@ -567,9 +687,9 @@ window.addEventListener("resize", () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-camera.position.x = 5;
-camera.position.y = 3;
-camera.position.z = 7;
+camera.position.x = 6;
+camera.position.y = 4;
+camera.position.z = 10;
 scene.add(camera);
 
 // Controls
@@ -611,6 +731,10 @@ signPost.castShadow = true;
 signPost.receiveShadow = true;
 signBoard.castShadow = true;
 signBoard.receiveShadow = true;
+fence.children.forEach((post) => {
+  post.castShadow = true;
+  post.receiveShadow = true;
+});
 
 // Mapping
 directionalLight.shadow.mapSize.width = 256;
