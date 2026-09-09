@@ -8,6 +8,11 @@ import { Sky, Timer, Wireframe } from "three/examples/jsm/Addons.js";
  */
 // Debug
 const gui = new GUI();
+gui.hide();
+
+window.addEventListener("keydown", (event) => {
+  if (event.key == "h") gui.show(gui._hidden);
+});
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -116,34 +121,61 @@ const graveNormalTexture = textureLoader.load(
 graveNormalTexture.repeat.set(0.3, 0.4);
 
 // Sign Texture
-const signColorTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_diff_1k.jpg");
-signColorTexture.colorSpace = THREE.SRGBColorSpace;
+// Post — small, narrow, taller than wide (repeat 1.5, 5.5 on all 4 maps)
+const signPostColorTexture = textureLoader.load(
+  "./sign/bark_brown_02_1k/bark_brown_02_diff_1k.jpg",
+);
+signPostColorTexture.repeat.set(1.5, 5.5);
+signPostColorTexture.wrapS = THREE.RepeatWrapping;
+signPostColorTexture.wrapT = THREE.RepeatWrapping;
+signPostColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-const signARMTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_arm_1k.jpg");
+const signPostARMTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_arm_1k.jpg");
+signPostARMTexture.repeat.set(1.5, 5.5);
+signPostARMTexture.wrapS = THREE.RepeatWrapping;
+signPostARMTexture.wrapT = THREE.RepeatWrapping;
 
-const signNormalTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_nor_gl_1k.jpg");
+const signPostNormalTexture = textureLoader.load(
+  "./sign/bark_brown_02_1k/bark_brown_02_nor_gl_1k.jpg",
+);
+signPostNormalTexture.repeat.set(1.5, 5.5);
+signPostNormalTexture.wrapS = THREE.RepeatWrapping;
+signPostNormalTexture.wrapT = THREE.RepeatWrapping;
 
-// Post textures — small, narrow, taller than wide
-const signPostColorTexture = signColorTexture.clone();
-const signPostARMTexture = signARMTexture.clone();
-const signPostNormalTexture = signNormalTexture.clone();
+const signPostDisplacementTexture = textureLoader.load(
+  "./sign/bark_brown_02_1k/bark_brown_02_disp_1k.jpg",
+);
+signPostDisplacementTexture.repeat.set(1.5, 5.5);
+signPostDisplacementTexture.wrapS = THREE.RepeatWrapping;
+signPostDisplacementTexture.wrapT = THREE.RepeatWrapping;
 
-for (const texture of [signPostColorTexture, signPostARMTexture, signPostNormalTexture]) {
-  texture.repeat.set(1.5, 5.5);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-}
+// Board — wide, much bigger than the post (repeat 3.6, 1.6 on all 4 maps)
+const signBoardColorTexture = textureLoader.load(
+  "./sign/bark_brown_02_1k/bark_brown_02_diff_1k.jpg",
+);
+signBoardColorTexture.repeat.set(3.6, 1.6);
+signBoardColorTexture.wrapS = THREE.RepeatWrapping;
+signBoardColorTexture.wrapT = THREE.RepeatWrapping;
+signBoardColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-// Board textures — wide, much bigger than the post
-const signBoardColorTexture = signColorTexture.clone();
-const signBoardARMTexture = signARMTexture.clone();
-const signBoardNormalTexture = signNormalTexture.clone();
+const signBoardARMTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_arm_1k.jpg");
+signBoardARMTexture.repeat.set(3.6, 1.6);
+signBoardARMTexture.wrapS = THREE.RepeatWrapping;
+signBoardARMTexture.wrapT = THREE.RepeatWrapping;
 
-for (const texture of [signBoardColorTexture, signBoardARMTexture, signBoardNormalTexture]) {
-  texture.repeat.set(3.6, 1.6);
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-}
+const signBoardNormalTexture = textureLoader.load(
+  "./sign/bark_brown_02_1k/bark_brown_02_nor_gl_1k.jpg",
+);
+signBoardNormalTexture.repeat.set(3.6, 1.6);
+signBoardNormalTexture.wrapS = THREE.RepeatWrapping;
+signBoardNormalTexture.wrapT = THREE.RepeatWrapping;
+
+const signBoardDisplacementTexture = textureLoader.load(
+  "./sign/bark_brown_02_1k/bark_brown_02_disp_1k.jpg",
+);
+signBoardDisplacementTexture.repeat.set(3.6, 1.6);
+signBoardDisplacementTexture.wrapS = THREE.RepeatWrapping;
+signBoardDisplacementTexture.wrapT = THREE.RepeatWrapping;
 
 // Door Texture
 const doorColorTexture = textureLoader.load("./door/color.webp");
@@ -356,12 +388,18 @@ const signPostGeometry = new THREE.BoxGeometry(
   signMeasurements.post.width,
   signMeasurements.post.height,
   signMeasurements.post.depth,
+  4,
+  20,
+  4,
 );
 
 const signBoardGeometry = new THREE.BoxGeometry(
   signMeasurements.board.width,
   signMeasurements.board.height,
   signMeasurements.post.depth,
+  20,
+  4,
+  4,
 );
 
 const signPostMaterial = new THREE.MeshStandardMaterial({
@@ -370,6 +408,9 @@ const signPostMaterial = new THREE.MeshStandardMaterial({
   roughnessMap: signPostARMTexture,
   metalnessMap: signPostARMTexture,
   normalMap: signPostNormalTexture,
+  displacementMap: signPostDisplacementTexture,
+  displacementScale: 0.058, // start small — bark bump is fine, not a canyon
+  displacementBias: -0.023,
 });
 
 const signBoardMaterial = new THREE.MeshStandardMaterial({
@@ -378,29 +419,101 @@ const signBoardMaterial = new THREE.MeshStandardMaterial({
   roughnessMap: signBoardARMTexture,
   metalnessMap: signBoardARMTexture,
   normalMap: signBoardNormalTexture,
+  displacementMap: signBoardDisplacementTexture,
+  displacementScale: 0.062,
+  displacementBias: -0.02,
 });
 
 // Sign post
 const signPost = new THREE.Mesh(signPostGeometry, signPostMaterial);
-signPost.position.set(3.5, signMeasurements.post.height / 2, 7);
+signPost.position.set(3.5, signMeasurements.post.height / 2 - 0.05, 7.5);
 scene.add(signPost);
 
 // Sign board
 const signBoard = new THREE.Mesh(signBoardGeometry, signBoardMaterial);
 signBoard.position.set(
   signPost.position.x,
-  signMeasurements.post.height - signMeasurements.board.height / 2,
+  signMeasurements.post.height - 0.05 - signMeasurements.board.height / 2,
   signPost.position.z + signMeasurements.post.depth,
 );
 signBoard.rotation.z = -0.35;
 scene.add(signBoard);
 
-// Optional: tweak the repeat live to dial in the grain scale, same pattern
-// as the floor's displacement tweaks above.
-gui.add(signPostColorTexture.repeat, "x").min(0.1).max(5).step(0.1).name("signPostRepeatX");
-gui.add(signPostColorTexture.repeat, "y").min(0.1).max(10).step(0.1).name("signPostRepeatY");
-gui.add(signBoardColorTexture.repeat, "x").min(0.1).max(5).step(0.1).name("signBoardRepeatX");
-gui.add(signBoardColorTexture.repeat, "y").min(-0.1).max(5).step(0.1).name("signBoardRepeatY");
+const signPostFolder = gui.addFolder("Sign Post");
+signPostFolder
+  .add(signPostColorTexture.repeat, "x")
+  .min(0.1)
+  .max(5)
+  .step(0.1)
+  .name("repeatX")
+  .onChange((v) => {
+    signPostColorTexture.repeat.x = v;
+    signPostARMTexture.repeat.x = v;
+    signPostNormalTexture.repeat.x = v;
+    signPostDisplacementTexture.repeat.x = v;
+  });
+signPostFolder
+  .add(signPostColorTexture.repeat, "y")
+  .min(0.1)
+  .max(10)
+  .step(0.1)
+  .name("repeatY")
+  .onChange((v) => {
+    signPostColorTexture.repeat.y = v;
+    signPostARMTexture.repeat.y = v;
+    signPostNormalTexture.repeat.y = v;
+    signPostDisplacementTexture.repeat.y = v;
+  });
+signPostFolder
+  .add(signPostMaterial, "displacementScale")
+  .min(0)
+  .max(0.1)
+  .step(0.001)
+  .name("displacementScale");
+signPostFolder
+  .add(signPostMaterial, "displacementBias")
+  .min(-0.1)
+  .max(0.1)
+  .step(0.001)
+  .name("displacementBias");
+
+const signBoardFolder = gui.addFolder("Sign Board");
+signBoardFolder
+  .add(signBoardColorTexture.repeat, "x")
+  .min(0.1)
+  .max(5)
+  .step(0.1)
+  .name("repeatX")
+  .onChange((v) => {
+    signBoardColorTexture.repeat.x = v;
+    signBoardARMTexture.repeat.x = v;
+    signBoardNormalTexture.repeat.x = v;
+    signBoardDisplacementTexture.repeat.x = v;
+  });
+signBoardFolder
+  .add(signBoardColorTexture.repeat, "y")
+  .min(0.1)
+  .max(5)
+  .step(0.1)
+  .name("repeatY")
+  .onChange((v) => {
+    signBoardColorTexture.repeat.y = v;
+    signBoardARMTexture.repeat.y = v;
+    signBoardNormalTexture.repeat.y = v;
+    signBoardDisplacementTexture.repeat.y = v;
+  });
+signBoardFolder
+  .add(signBoardMaterial, "displacementScale")
+  .min(0)
+  .max(0.1)
+  .step(0.001)
+  .name("displacementScale");
+signBoardFolder
+  .add(signBoardMaterial, "displacementBias")
+  .min(-0.1)
+  .max(0.1)
+  .step(0.001)
+  .name("displacementBias");
 
 /**
  * Lights
