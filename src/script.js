@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import { Sky, Timer } from "three/examples/jsm/Addons.js";
+import { Sky, Timer, Wireframe } from "three/examples/jsm/Addons.js";
 
 /**
  * Base
@@ -114,6 +114,36 @@ const graveNormalTexture = textureLoader.load(
   "./grave/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.webp",
 );
 graveNormalTexture.repeat.set(0.3, 0.4);
+
+// Sign Texture
+const signColorTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_diff_1k.jpg");
+signColorTexture.colorSpace = THREE.SRGBColorSpace;
+
+const signARMTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_arm_1k.jpg");
+
+const signNormalTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_nor_gl_1k.jpg");
+
+// Post textures — small, narrow, taller than wide
+const signPostColorTexture = signColorTexture.clone();
+const signPostARMTexture = signARMTexture.clone();
+const signPostNormalTexture = signNormalTexture.clone();
+
+for (const texture of [signPostColorTexture, signPostARMTexture, signPostNormalTexture]) {
+  texture.repeat.set(1.5, 5.5);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+}
+
+// Board textures — wide, much bigger than the post
+const signBoardColorTexture = signColorTexture.clone();
+const signBoardARMTexture = signARMTexture.clone();
+const signBoardNormalTexture = signNormalTexture.clone();
+
+for (const texture of [signBoardColorTexture, signBoardARMTexture, signBoardNormalTexture]) {
+  texture.repeat.set(3.6, 1.6);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+}
 
 // Door Texture
 const doorColorTexture = textureLoader.load("./door/color.webp");
@@ -308,6 +338,71 @@ for (let i = 0; i < 30; i++) {
 }
 
 /**
+ * Wood Sign
+ */
+const signMeasurements = {
+  post: {
+    width: 0.18,
+    height: 1.1,
+    depth: 0.11,
+  },
+  board: {
+    width: 1.25,
+    height: 0.2,
+  },
+};
+
+const signPostGeometry = new THREE.BoxGeometry(
+  signMeasurements.post.width,
+  signMeasurements.post.height,
+  signMeasurements.post.depth,
+);
+
+const signBoardGeometry = new THREE.BoxGeometry(
+  signMeasurements.board.width,
+  signMeasurements.board.height,
+  signMeasurements.post.depth,
+);
+
+const signPostMaterial = new THREE.MeshStandardMaterial({
+  map: signPostColorTexture,
+  aoMap: signPostARMTexture,
+  roughnessMap: signPostARMTexture,
+  metalnessMap: signPostARMTexture,
+  normalMap: signPostNormalTexture,
+});
+
+const signBoardMaterial = new THREE.MeshStandardMaterial({
+  map: signBoardColorTexture,
+  aoMap: signBoardARMTexture,
+  roughnessMap: signBoardARMTexture,
+  metalnessMap: signBoardARMTexture,
+  normalMap: signBoardNormalTexture,
+});
+
+// Sign post
+const signPost = new THREE.Mesh(signPostGeometry, signPostMaterial);
+signPost.position.set(3.5, signMeasurements.post.height / 2, 7);
+scene.add(signPost);
+
+// Sign board
+const signBoard = new THREE.Mesh(signBoardGeometry, signBoardMaterial);
+signBoard.position.set(
+  signPost.position.x,
+  signMeasurements.post.height - signMeasurements.board.height / 2,
+  signPost.position.z + signMeasurements.post.depth,
+);
+signBoard.rotation.z = -0.35;
+scene.add(signBoard);
+
+// Optional: tweak the repeat live to dial in the grain scale, same pattern
+// as the floor's displacement tweaks above.
+gui.add(signPostColorTexture.repeat, "x").min(0.1).max(5).step(0.1).name("signPostRepeatX");
+gui.add(signPostColorTexture.repeat, "y").min(0.1).max(10).step(0.1).name("signPostRepeatY");
+gui.add(signBoardColorTexture.repeat, "x").min(0.1).max(5).step(0.1).name("signBoardRepeatX");
+gui.add(signBoardColorTexture.repeat, "y").min(-0.1).max(5).step(0.1).name("signBoardRepeatY");
+
+/**
  * Lights
  */
 // Ambient light
@@ -359,9 +454,9 @@ window.addEventListener("resize", () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
-camera.position.x = 4;
-camera.position.y = 2;
-camera.position.z = 5;
+camera.position.x = 5;
+camera.position.y = 3;
+camera.position.z = 7;
 scene.add(camera);
 
 // Controls
@@ -399,6 +494,10 @@ graves.children.forEach((grave) => {
   grave.castShadow = true;
   grave.receiveShadow = true;
 });
+signPost.castShadow = true;
+signPost.receiveShadow = true;
+signBoard.castShadow = true;
+signBoard.receiveShadow = true;
 
 // Mapping
 directionalLight.shadow.mapSize.width = 256;
