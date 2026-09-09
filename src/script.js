@@ -284,6 +284,62 @@ roof.position.y += wallsMeasurements.height + roofMeasurements.height / 2;
 roof.rotation.y = Math.PI * 0.25;
 house.add(roof);
 
+/**
+ * Chimney
+ */
+const chimneyMeasurements = {
+  width: 0.4,
+  height: 1,
+  depth: 0.4,
+};
+const chimney = new THREE.Mesh(
+  new THREE.BoxGeometry(
+    chimneyMeasurements.width,
+    chimneyMeasurements.height,
+    chimneyMeasurements.depth,
+  ),
+  new THREE.MeshStandardMaterial({
+    map: graveColorTexture,
+    aoMap: graveARMTexture,
+    roughnessMap: graveARMTexture,
+    metalnessMap: graveARMTexture,
+    normalMap: graveNormalTexture,
+  }),
+);
+chimney.position.y = wallsMeasurements.height + chimneyMeasurements.height / 2 + 0.01;
+chimney.position.x = 1.3;
+chimney.position.z = -1.94;
+chimney.rotation.y = Math.PI * 0.25;
+gui.add(chimney.position, "x").min(-3).max(3).step(0.01).name("chimneyX");
+gui.add(chimney.position, "z").min(-3).max(3).step(0.01).name("chimneyZ");
+
+const chimneyRoofMeasurements = {
+  radius: 0.8,
+  height: 0.35,
+  segments: 4,
+};
+const chimneyRoof = new THREE.Mesh(
+  new THREE.ConeGeometry(
+    chimneyRoofMeasurements.radius,
+    chimneyRoofMeasurements.height,
+    chimneyRoofMeasurements.segments,
+  ),
+  new THREE.MeshStandardMaterial({
+    map: graveColorTexture,
+    aoMap: roofARMTexture,
+    roughnessMap: roofARMTexture,
+    metalnessMap: roofARMTexture,
+    normalMap: roofNormalTexture,
+  }),
+);
+chimneyRoof.position.y = chimneyMeasurements.height / 2;
+chimneyRoof.rotation.y = Math.PI * 0.25;
+gui.add(chimneyRoof.position, "x").min(-3).max(3).step(0.01).name("chimneyRoofX");
+gui.add(chimneyRoof.position, "z").min(-3).max(3).step(0.01).name("chimneyRoofZ");
+chimney.add(chimneyRoof);
+
+house.add(chimney);
+
 // Door
 const doorMeasurements = {
   width: 2.2,
@@ -400,6 +456,7 @@ const signMeasurements = {
   board: {
     width: 1.25,
     height: 0.2,
+    depth: 0.06,
   },
 };
 
@@ -415,7 +472,7 @@ const signPostGeometry = new THREE.BoxGeometry(
 const signBoardGeometry = new THREE.BoxGeometry(
   signMeasurements.board.width,
   signMeasurements.board.height,
-  signMeasurements.post.depth,
+  signMeasurements.board.depth,
   20,
   4,
   4,
@@ -445,14 +502,14 @@ const signBoardMaterial = new THREE.MeshStandardMaterial({
 
 // Sign post
 const signPost = new THREE.Mesh(signPostGeometry, signPostMaterial);
-signPost.position.set(3.5, signMeasurements.post.height / 2 - 0.05, 7.5);
+signPost.position.set(1, signMeasurements.post.height / 2 - 0.05, 8.5);
 scene.add(signPost);
 
 // Sign board
 const signBoard = new THREE.Mesh(signBoardGeometry, signBoardMaterial);
 signBoard.position.set(
-  signPost.position.x,
-  signMeasurements.post.height - 0.05 - signMeasurements.board.height / 2,
+  signPost.position.x + 0.3,
+  signMeasurements.post.height - 0.22 - signMeasurements.board.height / 2,
   signPost.position.z + signMeasurements.post.depth,
 );
 signBoard.rotation.z = -0.35;
@@ -495,6 +552,7 @@ signPostFolder
   .max(0.1)
   .step(0.001)
   .name("displacementBias");
+signPostFolder.add(signPost.position, "x").name("signPosition");
 
 const signBoardFolder = gui.addFolder("Sign Board");
 signBoardFolder
@@ -533,6 +591,7 @@ signBoardFolder
   .max(0.1)
   .step(0.001)
   .name("displacementBias");
+signBoardFolder.add(signBoard.position, "x").name("signBoardPosition");
 
 /**
  * Fences
@@ -735,6 +794,10 @@ fence.children.forEach((post) => {
   post.castShadow = true;
   post.receiveShadow = true;
 });
+chimney.castShadow = true;
+chimney.receiveShadow = true;
+chimneyRoof.castShadow = true;
+chimneyRoof.receiveShadow = true;
 
 // Mapping
 directionalLight.shadow.mapSize.width = 256;
