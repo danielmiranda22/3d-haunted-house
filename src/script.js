@@ -228,23 +228,21 @@ const doorMetalnessTexture = textureLoader.load("./door/metalness.webp");
 const doorRoughnessTexture = textureLoader.load("./door/roughness.webp");
 
 // Fence Texture
-const fenceColorTexture = textureLoader.load("./fence/bark_willow_1k/bark_willow_diff_1k.jpg");
+const fenceColorTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_diff_1k.jpg");
 fenceColorTexture.colorSpace = THREE.SRGBColorSpace;
-fenceColorTexture.repeat.set(2.8, 1.6);
+fenceColorTexture.repeat.set(1.2, 4);
 fenceColorTexture.wrapS = THREE.RepeatWrapping;
 fenceColorTexture.wrapT = THREE.RepeatWrapping;
-const fenceARMTexture = textureLoader.load("./fence/bark_willow_1k/bark_willow_arm_1k.jpg");
-fenceARMTexture.repeat.set(4.5, 1.6);
+const fenceARMTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_arm_1k.jpg");
+fenceARMTexture.repeat.set(1.2, 4);
 fenceARMTexture.wrapS = THREE.RepeatWrapping;
 fenceARMTexture.wrapT = THREE.RepeatWrapping;
-const fenceNormalTexture = textureLoader.load("./fence/bark_willow_1k/bark_willow_nor_gl_1k.jpg");
-fenceNormalTexture.repeat.set(4.5, 1.6);
+const fenceNormalTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_nor_gl_1k.jpg");
+fenceNormalTexture.repeat.set(1.2, 4);
 fenceNormalTexture.wrapS = THREE.RepeatWrapping;
 fenceNormalTexture.wrapT = THREE.RepeatWrapping;
-const fenceDisplacementTexture = textureLoader.load(
-  "./fence/bark_willow_1k/bark_willow_disp_1k.jpg",
-);
-fenceDisplacementTexture.repeat.set(4.5, 1.6);
+const fenceDisplacementTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_disp_1k.jpg");
+fenceDisplacementTexture.repeat.set(1.2, 4);
 fenceDisplacementTexture.wrapS = THREE.RepeatWrapping;
 fenceDisplacementTexture.wrapT = THREE.RepeatWrapping;
 
@@ -506,6 +504,8 @@ const fencePostGeometry = new THREE.CylinderGeometry(
   fenceMeasurements.post.radiusTop,
   fenceMeasurements.post.radiusBottom,
   fenceMeasurements.post.height,
+  8,
+  12,
 );
 
 const fenceMaterial = new THREE.MeshStandardMaterial({
@@ -514,9 +514,9 @@ const fenceMaterial = new THREE.MeshStandardMaterial({
   roughnessMap: fenceARMTexture,
   metalnessMap: fenceARMTexture,
   normalMap: fenceNormalTexture,
-  displacementMap: fenceDisplacementTexture,
-  displacementScale: 0.018,
-  displacementBias: -0.016,
+//   displacementMap: fenceDisplacementTexture,
+//   displacementScale: 0.01,
+//   displacementBias: -0.005,
 });
 
 for (let i = 0; i < fenceMeasurements.count; i++) {
@@ -536,7 +536,7 @@ for (let i = 0; i < fenceMeasurements.count; i++) {
   fencePost.scale.y = heightScale;
 
   fencePost.position.x = x;
-  fencePost.position.y = (fenceMeasurements.post.height * heightScale) / 2;
+  fencePost.position.y = fenceMeasurements.post.height * heightScale * 0.3;
   fencePost.position.z = z;
 
   const isVeryLeaning = Math.random() < 0.15;
