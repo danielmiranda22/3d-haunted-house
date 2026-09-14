@@ -125,57 +125,97 @@ graveNormalTexture.repeat.set(0.3, 0.4);
 const signPostColorTexture = textureLoader.load(
   "./sign/bark_brown_02_1k/bark_brown_02_diff_1k.jpg",
 );
-signPostColorTexture.repeat.set(1.5, 5.5);
+signPostColorTexture.repeat.set(1.2, 14);
 signPostColorTexture.wrapS = THREE.RepeatWrapping;
 signPostColorTexture.wrapT = THREE.RepeatWrapping;
 signPostColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 const signPostARMTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_arm_1k.jpg");
-signPostARMTexture.repeat.set(1.5, 5.5);
+signPostARMTexture.repeat.set(1.2, 14);
 signPostARMTexture.wrapS = THREE.RepeatWrapping;
 signPostARMTexture.wrapT = THREE.RepeatWrapping;
 
 const signPostNormalTexture = textureLoader.load(
   "./sign/bark_brown_02_1k/bark_brown_02_nor_gl_1k.jpg",
 );
-signPostNormalTexture.repeat.set(1.5, 5.5);
+signPostNormalTexture.repeat.set(1.2, 14);
 signPostNormalTexture.wrapS = THREE.RepeatWrapping;
 signPostNormalTexture.wrapT = THREE.RepeatWrapping;
 
 const signPostDisplacementTexture = textureLoader.load(
   "./sign/bark_brown_02_1k/bark_brown_02_disp_1k.jpg",
 );
-signPostDisplacementTexture.repeat.set(1.5, 5.5);
+signPostDisplacementTexture.repeat.set(1.2, 14);
 signPostDisplacementTexture.wrapS = THREE.RepeatWrapping;
 signPostDisplacementTexture.wrapT = THREE.RepeatWrapping;
+
+const signPostFolder = gui.addFolder("Sign Post Texture");
+signPostFolder
+  .add(signPostColorTexture.repeat, "y")
+  .min(1)
+  .max(30)
+  .step(0.5)
+  .name("postRepeatY")
+  .onChange((v) => {
+    signPostColorTexture.repeat.y = v;
+    signPostARMTexture.repeat.y = v;
+    signPostNormalTexture.repeat.y = v;
+    signPostDisplacementTexture.repeat.y = v;
+  });
 
 // Board — wide, much bigger than the post (repeat 3.6, 1.6 on all 4 maps)
 const signBoardColorTexture = textureLoader.load(
   "./sign/bark_brown_02_1k/bark_brown_02_diff_1k.jpg",
 );
-signBoardColorTexture.repeat.set(3.6, 1.6);
+signBoardColorTexture.repeat.set(2, 1.6);
 signBoardColorTexture.wrapS = THREE.RepeatWrapping;
 signBoardColorTexture.wrapT = THREE.RepeatWrapping;
 signBoardColorTexture.colorSpace = THREE.SRGBColorSpace;
 
 const signBoardARMTexture = textureLoader.load("./sign/bark_brown_02_1k/bark_brown_02_arm_1k.jpg");
-signBoardARMTexture.repeat.set(3.6, 1.6);
+signBoardARMTexture.repeat.set(2, 1.6);
 signBoardARMTexture.wrapS = THREE.RepeatWrapping;
 signBoardARMTexture.wrapT = THREE.RepeatWrapping;
 
 const signBoardNormalTexture = textureLoader.load(
   "./sign/bark_brown_02_1k/bark_brown_02_nor_gl_1k.jpg",
 );
-signBoardNormalTexture.repeat.set(3.6, 1.6);
+signBoardNormalTexture.repeat.set(2, 1.6);
 signBoardNormalTexture.wrapS = THREE.RepeatWrapping;
 signBoardNormalTexture.wrapT = THREE.RepeatWrapping;
 
 const signBoardDisplacementTexture = textureLoader.load(
   "./sign/bark_brown_02_1k/bark_brown_02_disp_1k.jpg",
 );
-signBoardDisplacementTexture.repeat.set(3.6, 1.6);
+signBoardDisplacementTexture.repeat.set(2, 1.6);
 signBoardDisplacementTexture.wrapS = THREE.RepeatWrapping;
 signBoardDisplacementTexture.wrapT = THREE.RepeatWrapping;
+
+const signBoardFolder = gui.addFolder("Sign Board Texture");
+signBoardFolder
+  .add(signBoardColorTexture.repeat, "y")
+  .min(1)
+  .max(30)
+  .step(0.5)
+  .name("postRepeatY")
+  .onChange((v) => {
+    signBoardColorTexture.repeat.y = v;
+    signBoardARMTexture.repeat.y = v;
+    signBoardNormalTexture.repeat.y = v;
+    signBoardDisplacementTexture.repeat.y = v;
+  });
+signBoardFolder
+  .add(signBoardColorTexture.repeat, "x")
+  .min(1)
+  .max(30)
+  .step(0.5)
+  .name("postRepeatX")
+  .onChange((v) => {
+    signBoardColorTexture.repeat.x = v;
+    signBoardARMTexture.repeat.x = v;
+    signBoardNormalTexture.repeat.x = v;
+    signBoardDisplacementTexture.repeat.x = v;
+  });
 
 // Door Texture
 const doorColorTexture = textureLoader.load("./door/color.webp");
@@ -188,20 +228,22 @@ const doorMetalnessTexture = textureLoader.load("./door/metalness.webp");
 const doorRoughnessTexture = textureLoader.load("./door/roughness.webp");
 
 // Fence Texture
-const fenceColorTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_diff_1k.jpg");
+const fenceColorTexture = textureLoader.load("./fence/bark_willow_1k/bark_willow_diff_1k.jpg");
 fenceColorTexture.colorSpace = THREE.SRGBColorSpace;
-fenceColorTexture.repeat.set(4.5, 1.6);
+fenceColorTexture.repeat.set(2.8, 1.6);
 fenceColorTexture.wrapS = THREE.RepeatWrapping;
 fenceColorTexture.wrapT = THREE.RepeatWrapping;
-const fenceARMTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_arm_1k.jpg");
+const fenceARMTexture = textureLoader.load("./fence/bark_willow_1k/bark_willow_arm_1k.jpg");
 fenceARMTexture.repeat.set(4.5, 1.6);
 fenceARMTexture.wrapS = THREE.RepeatWrapping;
 fenceARMTexture.wrapT = THREE.RepeatWrapping;
-const fenceNormalTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_nor_gl_1k.jpg");
+const fenceNormalTexture = textureLoader.load("./fence/bark_willow_1k/bark_willow_nor_gl_1k.jpg");
 fenceNormalTexture.repeat.set(4.5, 1.6);
 fenceNormalTexture.wrapS = THREE.RepeatWrapping;
 fenceNormalTexture.wrapT = THREE.RepeatWrapping;
-const fenceDisplacementTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_disp_1k.jpg");
+const fenceDisplacementTexture = textureLoader.load(
+  "./fence/bark_willow_1k/bark_willow_disp_1k.jpg",
+);
 fenceDisplacementTexture.repeat.set(4.5, 1.6);
 fenceDisplacementTexture.wrapS = THREE.RepeatWrapping;
 fenceDisplacementTexture.wrapT = THREE.RepeatWrapping;
@@ -445,155 +487,6 @@ for (let i = 0; i < 30; i++) {
 }
 
 /**
- * Wood Sign
- */
-const signMeasurements = {
-  post: {
-    width: 0.18,
-    height: 1.1,
-    depth: 0.11,
-  },
-  board: {
-    width: 1.25,
-    height: 0.2,
-    depth: 0.06,
-  },
-};
-
-const signPostGeometry = new THREE.BoxGeometry(
-  signMeasurements.post.width,
-  signMeasurements.post.height,
-  signMeasurements.post.depth,
-  4,
-  20,
-  4,
-);
-
-const signBoardGeometry = new THREE.BoxGeometry(
-  signMeasurements.board.width,
-  signMeasurements.board.height,
-  signMeasurements.board.depth,
-  20,
-  4,
-  4,
-);
-
-const signPostMaterial = new THREE.MeshStandardMaterial({
-  map: signPostColorTexture,
-  aoMap: signPostARMTexture,
-  roughnessMap: signPostARMTexture,
-  metalnessMap: signPostARMTexture,
-  normalMap: signPostNormalTexture,
-  displacementMap: signPostDisplacementTexture,
-  displacementScale: 0.058, // start small — bark bump is fine, not a canyon
-  displacementBias: -0.023,
-});
-
-const signBoardMaterial = new THREE.MeshStandardMaterial({
-  map: signBoardColorTexture,
-  aoMap: signBoardARMTexture,
-  roughnessMap: signBoardARMTexture,
-  metalnessMap: signBoardARMTexture,
-  normalMap: signBoardNormalTexture,
-  displacementMap: signBoardDisplacementTexture,
-  displacementScale: 0.062,
-  displacementBias: -0.02,
-});
-
-// Sign post
-const signPost = new THREE.Mesh(signPostGeometry, signPostMaterial);
-signPost.position.set(1, signMeasurements.post.height / 2 - 0.05, 8.5);
-scene.add(signPost);
-
-// Sign board
-const signBoard = new THREE.Mesh(signBoardGeometry, signBoardMaterial);
-signBoard.position.set(
-  signPost.position.x + 0.3,
-  signMeasurements.post.height - 0.22 - signMeasurements.board.height / 2,
-  signPost.position.z + signMeasurements.post.depth,
-);
-signBoard.rotation.z = -0.35;
-scene.add(signBoard);
-
-const signPostFolder = gui.addFolder("Sign Post");
-signPostFolder
-  .add(signPostColorTexture.repeat, "x")
-  .min(0.1)
-  .max(5)
-  .step(0.1)
-  .name("repeatX")
-  .onChange((v) => {
-    signPostColorTexture.repeat.x = v;
-    signPostARMTexture.repeat.x = v;
-    signPostNormalTexture.repeat.x = v;
-    signPostDisplacementTexture.repeat.x = v;
-  });
-signPostFolder
-  .add(signPostColorTexture.repeat, "y")
-  .min(0.1)
-  .max(10)
-  .step(0.1)
-  .name("repeatY")
-  .onChange((v) => {
-    signPostColorTexture.repeat.y = v;
-    signPostARMTexture.repeat.y = v;
-    signPostNormalTexture.repeat.y = v;
-    signPostDisplacementTexture.repeat.y = v;
-  });
-signPostFolder
-  .add(signPostMaterial, "displacementScale")
-  .min(0)
-  .max(0.1)
-  .step(0.001)
-  .name("displacementScale");
-signPostFolder
-  .add(signPostMaterial, "displacementBias")
-  .min(-0.1)
-  .max(0.1)
-  .step(0.001)
-  .name("displacementBias");
-signPostFolder.add(signPost.position, "x").name("signPosition");
-
-const signBoardFolder = gui.addFolder("Sign Board");
-signBoardFolder
-  .add(signBoardColorTexture.repeat, "x")
-  .min(0.1)
-  .max(5)
-  .step(0.1)
-  .name("repeatX")
-  .onChange((v) => {
-    signBoardColorTexture.repeat.x = v;
-    signBoardARMTexture.repeat.x = v;
-    signBoardNormalTexture.repeat.x = v;
-    signBoardDisplacementTexture.repeat.x = v;
-  });
-signBoardFolder
-  .add(signBoardColorTexture.repeat, "y")
-  .min(0.1)
-  .max(5)
-  .step(0.1)
-  .name("repeatY")
-  .onChange((v) => {
-    signBoardColorTexture.repeat.y = v;
-    signBoardARMTexture.repeat.y = v;
-    signBoardNormalTexture.repeat.y = v;
-    signBoardDisplacementTexture.repeat.y = v;
-  });
-signBoardFolder
-  .add(signBoardMaterial, "displacementScale")
-  .min(0)
-  .max(0.1)
-  .step(0.001)
-  .name("displacementScale");
-signBoardFolder
-  .add(signBoardMaterial, "displacementBias")
-  .min(-0.1)
-  .max(0.1)
-  .step(0.001)
-  .name("displacementBias");
-signBoardFolder.add(signBoard.position, "x").name("signBoardPosition");
-
-/**
  * Fences
  */
 const fenceMeasurements = {
@@ -695,6 +588,110 @@ fenceFolder
   .name("displacementBias");
 
 /**
+ * Wood Sign
+ */
+const signMeasurements = {
+  post: {
+    width: 0.18,
+    height: 4.1,
+    depth: 0.11,
+  },
+  board: {
+    width: 1.25,
+    height: 0.2,
+    depth: 0.06,
+  },
+};
+
+const signPostGeometry = new THREE.BoxGeometry(
+  signMeasurements.post.width,
+  signMeasurements.post.height,
+  signMeasurements.post.depth,
+  4,
+  20,
+  4,
+);
+
+const signBoardGeometry = new THREE.BoxGeometry(
+  signMeasurements.board.width,
+  signMeasurements.board.height,
+  signMeasurements.board.depth,
+  20,
+  4,
+  4,
+);
+
+const signPostMaterial = new THREE.MeshStandardMaterial({
+  map: signPostColorTexture,
+  aoMap: signPostARMTexture,
+  roughnessMap: signPostARMTexture,
+  metalnessMap: signPostARMTexture,
+  normalMap: signPostNormalTexture,
+  displacementMap: signPostDisplacementTexture,
+  displacementScale: 0.058, // start small — bark bump is fine, not a canyon
+  displacementBias: -0.023,
+});
+
+const signBoardMaterial = new THREE.MeshStandardMaterial({
+  map: signBoardColorTexture,
+  aoMap: signBoardARMTexture,
+  roughnessMap: signBoardARMTexture,
+  metalnessMap: signBoardARMTexture,
+  normalMap: signBoardNormalTexture,
+  displacementMap: signBoardDisplacementTexture,
+  displacementScale: 0.062,
+  displacementBias: -0.02,
+});
+
+// Sign Group
+const signs = new THREE.Group();
+scene.add(signs);
+
+const createSign = (scale = 1) => {
+  const sign = new THREE.Group();
+
+  const post = new THREE.Mesh(signPostGeometry, signPostMaterial);
+  const board = new THREE.Mesh(signBoardGeometry, signBoardMaterial);
+
+  // Post starts at the ground
+  post.position.y = signMeasurements.post.height / 2;
+
+  // Board sits near the top of the post
+  board.position.x = 0.3;
+  board.position.y = signMeasurements.post.height - signMeasurements.board.height / 2;
+
+  // Slightly rotate the board for an old, crooked look
+  board.rotation.z = -0.3;
+
+  sign.add(post, board);
+
+  // Different overall sign size
+  sign.scale.setScalar(scale);
+
+  return sign;
+};
+
+const signScales = [0.7, 1, 1.3];
+
+for (const scale of signScales) {
+  const sign = createSign(scale);
+
+  // Place signs just outside the fence
+  const angle = Math.random() * Math.PI * 2;
+  const radius = fenceMeasurements.radius + 0.7;
+
+  sign.position.x = (Math.random() - 0.65) * radius;
+  sign.position.z = -radius * 0.75;
+
+  // Random leaning / crooked construction
+  sign.rotation.x = (Math.random() - 0.5) * 0.15;
+  sign.rotation.y = -angle + (Math.random() - 0.5) * 0.4;
+  sign.rotation.z = (Math.random() - 0.5) * 0.18;
+
+  signs.add(sign);
+}
+
+/**
  * Lights
  */
 // Ambient light
@@ -786,10 +783,12 @@ graves.children.forEach((grave) => {
   grave.castShadow = true;
   grave.receiveShadow = true;
 });
-signPost.castShadow = true;
-signPost.receiveShadow = true;
-signBoard.castShadow = true;
-signBoard.receiveShadow = true;
+signs.traverse((object) => {
+  if (object.isMesh) {
+    object.castShadow = true;
+    object.receiveShadow = true;
+  }
+});
 fence.children.forEach((post) => {
   post.castShadow = true;
   post.receiveShadow = true;
