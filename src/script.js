@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import { Sky, Timer, Wireframe } from "three/examples/jsm/Addons.js";
+import { Sky, ThreeMFLoader, Timer, Wireframe } from "three/examples/jsm/Addons.js";
+import { depth } from "three/tsl";
 
 /**
  * Base
@@ -67,6 +68,18 @@ const wallARMTexture = textureLoader.load(
 );
 const wallNormalTexture = textureLoader.load(
   "./wall/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.webp",
+);
+
+// window Texture
+const windowColorTexture = textureLoader.load(
+  "./wallpaper/decrepit_wallpaper_1k/decrepit_wallpaper_diff_1k.jpg",
+);
+windowColorTexture.colorSpace = THREE.SRGBColorSpace;
+const windowARMTexture = textureLoader.load(
+  "./wallpaper/decrepit_wallpaper_1k/decrepit_wallpaper_arm_1k.jpg",
+);
+const windowNormalTexture = textureLoader.load(
+  "./wallpaper/decrepit_wallpaper_1k/decrepit_wallpaper_nor_gl_1k.jpg",
 );
 
 // Roof Texture
@@ -300,6 +313,131 @@ const walls = new THREE.Mesh(
 walls.position.y += wallsMeasurements.height / 2; // the walls were buried because the origin of geometry is center, so need to move up
 house.add(walls);
 
+// Window
+const windowMeasurements = {
+  glass: {
+    width: 1.8,
+    height: 1.0,
+  },
+  frame: {
+    thickness: 0.1,
+    depth: 0.06,
+  },
+  board: {
+    width: 2.1,
+    height: 0.2,
+    depth: 0.05,
+  },
+};
+
+const windowGroup = new THREE.Group();
+
+// Glass
+const windowGlassGeometry = new THREE.PlaneGeometry(
+  windowMeasurements.glass.width,
+  windowMeasurements.glass.height,
+);
+const windowGlassMaterial = new THREE.MeshStandardMaterial({
+  map: windowColorTexture,
+  aoMap: windowARMTexture,
+  roughnessMap: windowARMTexture,
+  metalnessMap: windowARMTexture,
+  normalMap: windowNormalTexture,
+});
+const windowGlass = new THREE.Mesh(windowGlassGeometry, windowGlassMaterial);
+windowGroup.add(windowGlass);
+
+// Frame
+const windowFrameMaterial = new THREE.MeshStandardMaterial({
+  map: graveColorTexture,
+  aoMap: graveARMTexture,
+  roughnessMap: graveARMTexture,
+  metalnessMap: graveARMTexture,
+  normalMap: graveNormalTexture,
+});
+
+// Top/bottom bars span the full outer width(glass+both side bars)
+const windowFrameTopBottomGeometry = new THREE.BoxGeometry(
+  windowMeasurements.glass.width + windowMeasurements.frame.thickness * 2,
+  windowMeasurements.frame.thickness,
+  windowMeasurements.frame.depth,
+);
+const windowFrameTop = new THREE.Mesh(windowFrameTopBottomGeometry, windowFrameMaterial);
+windowFrameTop.position.y =
+  windowMeasurements.glass.height / 2 + windowMeasurements.frame.thickness / 2;
+windowGroup.add(windowFrameTop);
+
+const windowFrameBottom = new THREE.Mesh(windowFrameTopBottomGeometry, windowFrameMaterial);
+windowFrameBottom.position.y = -(
+  windowMeasurements.glass.height / 2 +
+  windowMeasurements.frame.thickness / 2
+);
+windowGroup.add(windowFrameBottom);
+
+// Left / right bars fit the inner height, between the top/bottom bars
+const windowFrameSideGeometry = new THREE.BoxGeometry(
+  windowMeasurements.frame.thickness,
+  windowMeasurements.glass.height,
+  windowMeasurements.frame.depth,
+);
+
+const windowFrameLeft = new THREE.Mesh(windowFrameSideGeometry, windowFrameMaterial);
+windowFrameLeft.position.x = -(
+  windowMeasurements.glass.width / 2 +
+  windowMeasurements.frame.thickness / 2
+);
+windowGroup.add(windowFrameLeft);
+
+const windowFrameRight = new THREE.Mesh(windowFrameSideGeometry, windowFrameMaterial);
+windowFrameRight.position.x =
+  windowMeasurements.glass.width / 2 + windowMeasurements.frame.thickness / 2;
+windowGroup.add(windowFrameRight);
+
+// Board — boarded-up plank, reuses the fence's rough_wood textures
+const windowBoardColorTexture = fenceColorTexture.clone();
+windowBoardColorTexture.needsUpdate = true; // cloned textures start at version 0 and won't upload without this
+windowBoardColorTexture.repeat.set(2.5, 1);
+
+const windowBoardARMTexture = fenceARMTexture.clone();
+windowBoardARMTexture.needsUpdate = true;
+windowBoardARMTexture.repeat.set(2.5, 1);
+
+const windowBoardNormalTexture = fenceNormalTexture.clone();
+windowBoardNormalTexture.needsUpdate = true;
+windowBoardNormalTexture.repeat.set(2.5, 1);
+
+const windowBoardMaterial = new THREE.MeshStandardMaterial({
+  map: windowBoardColorTexture,
+  aoMap: windowBoardARMTexture,
+  roughnessMap: windowBoardARMTexture,
+  metalnessMap: windowBoardARMTexture,
+  normalMap: windowBoardNormalTexture,
+});
+
+const windowBoardGeometry = new THREE.BoxGeometry(
+  windowMeasurements.board.width,
+  windowMeasurements.board.height,
+  windowMeasurements.board.depth,
+);
+const windowBoard = new THREE.Mesh(windowBoardGeometry, windowBoardMaterial);
+windowBoard.position.z = windowMeasurements.frame.depth / 2 + windowMeasurements.board.depth / 2;
+windowBoard.position.x = -0.1;
+windowBoard.position.y = 0.05;
+windowBoard.rotation.z = -0.12;
+
+const windowBoard2 = new THREE.Mesh(windowBoardGeometry, windowBoardMaterial);
+windowBoard2.position.z = windowMeasurements.frame.depth / 2 + windowMeasurements.board.depth / 2;
+windowBoard2.position.x = -0.1;
+windowBoard2.position.y = -0.25;
+windowBoard2.rotation.z = -0.18;
+windowGroup.add(windowBoard, windowBoard2);
+
+// Place the whole window on the wall — set once, instead of on every child
+windowGroup.position.y = wallsMeasurements.height / 2;
+windowGroup.position.z = -(wallsMeasurements.width / 2 + 0.01);
+windowGroup.rotation.y = -Math.PI;
+house.add(windowGroup);
+
 // Roof
 const roofMeasurements = {
   radius: 3.5,
@@ -514,9 +652,9 @@ const fenceMaterial = new THREE.MeshStandardMaterial({
   roughnessMap: fenceARMTexture,
   metalnessMap: fenceARMTexture,
   normalMap: fenceNormalTexture,
-//   displacementMap: fenceDisplacementTexture,
-//   displacementScale: 0.01,
-//   displacementBias: -0.005,
+  //   displacementMap: fenceDisplacementTexture,
+  //   displacementScale: 0.01,
+  //   displacementBias: -0.005,
 });
 
 for (let i = 0; i < fenceMeasurements.count; i++) {
@@ -746,7 +884,15 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 
 camera.position.x = 6;
 camera.position.y = 4;
 camera.position.z = 10;
+// Back of the house testing
+// camera.position.x = 0.5;
+// camera.position.y = 1.5;
+// camera.position.z = -5.5;
 scene.add(camera);
+const cameraPosition = gui.addFolder("Camera position");
+cameraPosition.add(camera.position, "y").min(-20).max(30).step(0.5).name("positionY");
+cameraPosition.add(camera.position, "x").min(-20).max(30).step(0.5).name("positionX");
+cameraPosition.add(camera.position, "z").min(-20).max(30).step(0.5).name("positionZ");
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
@@ -797,6 +943,12 @@ chimney.castShadow = true;
 chimney.receiveShadow = true;
 chimneyRoof.castShadow = true;
 chimneyRoof.receiveShadow = true;
+windowGroup.traverse((object) => {
+  if (object.isMesh) {
+    object.castShadow = true;
+    object.receiveShadow = true;
+  }
+});
 
 // Mapping
 directionalLight.shadow.mapSize.width = 256;
