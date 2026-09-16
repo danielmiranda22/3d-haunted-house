@@ -991,23 +991,23 @@ scene.fog = new THREE.FogExp2("#02343f", 0.1);
 /**
  * Spooky Sound
  */
-// 1. Configurar o volume inicial fixo e baixo (-18 dB)
+// 1. Initial volume fix and below (-18 dB)
 const volumeNode = new Tone.Volume(-18).toDestination();
 
-// 2. Sintetizador mais grave + Efeitos integrados
+// 2. Deeper synthesizer + Integrated effects
 const delay = new Tone.PingPongDelay("4n", 0.4).connect(volumeNode);
 const reverb = new Tone.Reverb({ decay: 4, wet: 0.5 }).connect(delay);
 
 const ghostSynth = new Tone.MonoSynth({
   oscillator: { type: "sine" },
-  envelope: { attack: 0.2, release: 2.0 }, // Ataque e libertação mais lentos e densos
+  envelope: { attack: 0.2, release: 2.0 }, // Slower and denser attack and release
   portamento: 0.2,
 }).connect(reverb);
 
-// Vibrato drasticamente reduzido (apenas um leve tremor frio)
+// Vibrato drastically reduced (only a slight cold tremor)
 new Tone.LFO(6, -15, 15).start().connect(ghostSynth.oscillator.detune);
 
-// 3. Melodia alterada: Notas mais graves (Oitava 3) e intervalos mais dissonantes e fúnebres
+// 3. Altered melody: Lower notes (Octave 3) and more dissonant and mournful intervals.
 const notes = [
   "C3",
   "C#3",
@@ -1027,7 +1027,7 @@ const notes = [
   "C3",
 ];
 
-// 4. Sequenciador em loop (um pouco mais arrastado a 95 BPM)
+// 4. Loop sequencer (a little slower at 95 BPM)
 const seq = new Tone.Sequence(
   (time, note) => {
     if (note) ghostSynth.triggerAttackRelease(note, "4n", time);
@@ -1038,7 +1038,7 @@ const seq = new Tone.Sequence(
 
 Tone.getTransport().bpm.value = 105;
 
-// 5. Botão Inteligente: Alterna entre Iniciar e Parar
+// 5. Toggle
 const toggleMusic = async () => {
   const btn = document.getElementById("btn-play");
 
