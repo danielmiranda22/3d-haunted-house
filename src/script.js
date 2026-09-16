@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import { Sky, ThreeMFLoader, Timer, Wireframe } from "three/examples/jsm/Addons.js";
-import { depth } from "three/tsl";
+import { Sky, Timer } from "three/examples/jsm/Addons.js";
+import * as Tone from "tone";
 
 /**
  * Base
@@ -394,16 +394,15 @@ windowFrameRight.position.x =
 windowGroup.add(windowFrameRight);
 
 // Board — boarded-up plank, reuses the fence's rough_wood textures
-const windowBoardColorTexture = fenceColorTexture.clone();
-windowBoardColorTexture.needsUpdate = true; // cloned textures start at version 0 and won't upload without this
+const windowBoardColorTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_diff_1k.jpg");
 windowBoardColorTexture.repeat.set(2.5, 1);
 
-const windowBoardARMTexture = fenceARMTexture.clone();
-windowBoardARMTexture.needsUpdate = true;
+const windowBoardARMTexture = textureLoader.load("./fence/rough_wood_1k/rough_wood_arm_1k.jpg");
 windowBoardARMTexture.repeat.set(2.5, 1);
 
-const windowBoardNormalTexture = fenceNormalTexture.clone();
-windowBoardNormalTexture.needsUpdate = true;
+const windowBoardNormalTexture = textureLoader.load(
+  "./fence/rough_wood_1k/rough_wood_nor_gl_1k.jpg",
+);
 windowBoardNormalTexture.repeat.set(2.5, 1);
 
 const windowBoardMaterial = new THREE.MeshStandardMaterial({
@@ -988,6 +987,76 @@ scene.add(sky);
  * Fog
  */
 scene.fog = new THREE.FogExp2("#02343f", 0.1);
+
+/**
+ * Spooky Sound
+ */
+// 1. Configurar o volume inicial fixo e baixo (-18 dB)
+const volumeNode = new Tone.Volume(-18).toDestination();
+
+// 2. Sintetizador mais grave + Efeitos integrados
+const delay = new Tone.PingPongDelay("4n", 0.4).connect(volumeNode);
+const reverb = new Tone.Reverb({ decay: 4, wet: 0.5 }).connect(delay);
+
+const ghostSynth = new Tone.MonoSynth({
+  oscillator: { type: "sine" },
+  envelope: { attack: 0.2, release: 2.0 }, // Ataque e libertação mais lentos e densos
+  portamento: 0.2,
+}).connect(reverb);
+
+// Vibrato drasticamente reduzido (apenas um leve tremor frio)
+new Tone.LFO(6, -15, 15).start().connect(ghostSynth.oscillator.detune);
+
+// 3. Melodia alterada: Notas mais graves (Oitava 3) e intervalos mais dissonantes e fúnebres
+const notes = [
+  "C3",
+  "C#3",
+  "E3",
+  "D#3",
+  "G3",
+  "F#3",
+  "D#3",
+  "C3",
+  "C3",
+  "C#3",
+  "E3",
+  "G3",
+  "G#3",
+  "E3",
+  "C#3",
+  "C3",
+];
+
+// 4. Sequenciador em loop (um pouco mais arrastado a 95 BPM)
+const seq = new Tone.Sequence(
+  (time, note) => {
+    if (note) ghostSynth.triggerAttackRelease(note, "4n", time);
+  },
+  notes,
+  "4n",
+);
+
+Tone.getTransport().bpm.value = 105;
+
+// 5. Botão Inteligente: Alterna entre Iniciar e Parar
+const toggleMusic = async () => {
+  const btn = document.getElementById("btn-play");
+
+  if (Tone.getTransport().state === "started") {
+    Tone.getTransport().stop();
+    seq.stop();
+    btn.innerText = "👻";
+  } else {
+    await Tone.start();
+    Tone.getTransport().start();
+    seq.start(0);
+    btn.innerText = "🛑";
+  }
+};
+
+document.getElementById("btn-play").addEventListener("click", (e) => {
+  toggleMusic();
+});
 
 /**
  * Animate
