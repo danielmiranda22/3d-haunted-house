@@ -24,6 +24,9 @@ https://3d-haunted-house-by-dano.vercel.app/
 - 🎥 Orbit camera controls
 - 🌌 Procedural sky
 - 🌑 Shadow mapping
+- 🪵 Randomly placed spooky posts of varying size
+- 🪟 Boarded window with crooked wooden frame
+- 🎶 Toggleable spooky ambient music (Tone.js)
 
 ## 🛠️ Built With
 
