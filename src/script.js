@@ -3,12 +3,14 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
 import { Sky, Timer } from "three/examples/jsm/Addons.js";
 import * as Tone from "tone";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 
 /**
  * Base
  */
 // Debug
-const gui = new GUI();
+const gui = new GUI({ width: 340 });
 gui.hide();
 
 window.addEventListener("keydown", (event) => {
@@ -986,7 +988,8 @@ scene.add(sky);
 /**
  * Fog
  */
-scene.fog = new THREE.FogExp2("#02343f", 0.1);
+const fogColor = "#02343f"; // Exemplo de cor escura/noturna
+scene.fog = new THREE.FogExp2(fogColor, 0.08);
 
 /**
  * Spooky Sound
@@ -1059,15 +1062,90 @@ document.getElementById("btn-play").addEventListener("click", (e) => {
 });
 
 /**
+ * Models
+ */
+const gltfLoader = new GLTFLoader();
+const mixers = [];
+const foxMaterials = [];
+const foxOriginalColors = [];
+
+gltfLoader.load(
+  "/models/Fox/glTF/Fox.gltf",
+  (gltf) => {
+    const radius = 10;
+
+    for (let i = 0; i < 3; i++) {
+      const angle = Math.random() * Math.PI * 2; // random angle, full circle, every fox
+
+      const fox = SkeletonUtils.clone(gltf.scene);
+
+      fox.scale.set(0.003, 0.003, 0.003);
+
+      fox.position.x = Math.sin(angle) * radius;
+      fox.position.z = Math.cos(angle) * radius;
+      fox.position.y = 0;
+
+      fox.rotation.set(0, angle + Math.PI, 0);
+
+      fox.traverse((child) => {
+        if (child.isMesh) {
+          child.material = child.material.clone();
+          foxOriginalColors.push(child.material.color.clone()); // snapshot before blending, so the slider can reset from it
+          child.material.color.lerp(new THREE.Color(fogColor), 0.75);
+          foxMaterials.push(child.material);
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      scene.add(fox);
+
+      // 4. Cria um mixer único para esta raposa e inicia a animação
+      const mixer = new THREE.AnimationMixer(fox);
+      const action = mixer.clipAction(gltf.animations[0]);
+      action.play();
+
+      // Guarda na array para podermos animar no loop
+      mixers.push(mixer);
+    }
+  },
+  (progress) => {},
+  (error) => {
+    console.log(error);
+  },
+);
+const foxFolder = gui.addFolder("Fox");
+const foxParams = { fogBlend: 0.75 };
+
+foxFolder
+  .add(foxParams, "fogBlend")
+  .min(0)
+  .max(1)
+  .step(0.01)
+  .name("fogBlend")
+  .onChange((value) => {
+    foxMaterials.forEach((material, i) => {
+      material.color.copy(foxOriginalColors[i]).lerp(new THREE.Color(fogColor), value);
+    });
+  });
+
+/**
  * Animate
  */
 const timer = new Timer();
+let previousTime = 0;
 
 const tick = () => {
   // Timer
   timer.update();
   const elapsedTime = timer.getElapsed();
+  const deltaTime = elapsedTime - previousTime;
+  previousTime = elapsedTime;
 
+  // Update Mixers
+  for (const mixer of mixers) {
+    mixer.update(deltaTime);
+  }
   // Ghost
   const ghost1Angle = elapsedTime * 0.5;
   ghost1.position.x = Math.cos(ghost1Angle) * 4;
