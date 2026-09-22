@@ -5,6 +5,7 @@ import { Sky, Timer } from "three/examples/jsm/Addons.js";
 import * as Tone from "tone";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
+import { label } from "three/tsl";
 
 /**
  * Base
@@ -1064,12 +1065,13 @@ document.getElementById("btn-play").addEventListener("click", (e) => {
 /**
  * Models
  */
-const gltfLoader = new GLTFLoader();
+const gLTFLoader = new GLTFLoader();
 const mixers = [];
 const foxMaterials = [];
 const foxOriginalColors = [];
 
-gltfLoader.load(
+// Fox
+gLTFLoader.load(
   "/models/Fox/glTF/Fox.gltf",
   (gltf) => {
     const radius = 10;
@@ -1128,6 +1130,42 @@ foxFolder
       material.color.copy(foxOriginalColors[i]).lerp(new THREE.Color(fogColor), value);
     });
   });
+
+// Lamp
+gLTFLoader.load(
+  "/models/Lamp/glTF/Lantern.gltf",
+  (gltf) => {
+    const lampConfigs = [
+      { position: [-2, 0, 8.5], rotationY: 0 },
+      { position: [-2, 0, -8.5], rotationY: 0 },
+      { position: [-8.5, 0, -3.0], rotationY: Math.PI },
+    ];
+
+    const lamps = lampConfigs.map(({ position, rotationY }) => {
+      const lamp = SkeletonUtils.clone(gltf.scene);
+      lamp.scale.set(0.08, 0.08, 0.08);
+      lamp.position.set(...position);
+      lamp.rotation.y = rotationY;
+
+      lamp.traverse((child) => {
+        if (child.isMesh) {
+          child.material = child.material.clone();
+          child.material.color.lerp(new THREE.Color(fogColor), 0.75);
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      return lamp;
+    });
+
+    scene.add(...lamps);
+  },
+  (progress) => {},
+  (error) => {
+    console.log(error);
+  },
+);
 
 /**
  * Animate
