@@ -7,9 +7,11 @@ The project explores the fundamentals of creating a 3D scene in the browser usin
 This repository contains the base implementation following the course, along with my own customizations and experiments as the project continues to grow.
 
 🚀 **Live Demo:**  
-https://3d-haunted-house-by-dano.vercel.app/
+[3D Haunted House](https://3d-haunted-house-by-dano.vercel.app/)
 
 ![Haunted House](./static/screenshot.png)
+![Haunted House](./static/screenshot2.png)
+![Haunted House](./static/screenshot3.png)
 
 ## ✨ Features
 
@@ -27,6 +29,7 @@ https://3d-haunted-house-by-dano.vercel.app/
 - 🪵 Randomly placed spooky posts of varying size
 - 🪟 Boarded window with crooked wooden frame
 - 🎶 Toggleable spooky ambient music (Tone.js)
+- 🟪 3D models (fox, lantern) - [glTF sample assets](https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models)
 
 ## 🛠️ Built With
 
