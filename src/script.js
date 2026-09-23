@@ -1167,6 +1167,29 @@ gLTFLoader.load(
   },
 );
 
+// Lamp Lights
+const lamp1Light = new THREE.PointLight("#ffd446", 2, 0, 4);
+lamp1Light.position.set(-1.23, 0.73, 8.5);
+scene.add(lamp1Light);
+
+const lamp2Light = new THREE.PointLight("#ffd446", 2, 0, 4);
+lamp2Light.position.set(-1.23, 0.73, -8.5);
+scene.add(lamp2Light);
+
+const lamp3Light = new THREE.PointLight("#ffd446", 2, 0, 4);
+lamp3Light.position.set(-9.27, 0.73, -3);
+scene.add(lamp3Light);
+
+// const lampLightHelper = new THREE.PointLightHelper(lamp3Light);
+// scene.add(lampLightHelper);
+
+// const lampLightFolder = gui.addFolder("Lamp Light");
+// lampLightFolder.add(lamp3Light.position, "x").min(-20).max(20).step(0.01).name("lampLightX");
+// lampLightFolder.add(lamp3Light.position, "y").min(-20).max(20).step(0.01).name("lampLightY");
+// lampLightFolder.add(lamp3Light.position, "z").min(-20).max(20).step(0.01).name("lampLightZ");
+// lampLightFolder.add(lamp3Light, "intensity").min(-1).max(3).step(0.01).name("Intensity");
+// lampLightFolder.add(lamp3Light, "decay").min(-1).max(3).step(0.01).name("Intensity");
+
 /**
  * Animate
  */
@@ -1209,6 +1232,9 @@ const tick = () => {
   const pulse3 = Math.sin(elapsedTime * 71.1) * 0.05; // fast, tiny jitter
 
   doorLight.intensity = 4 + pulse1 + pulse2 + pulse3;
+  lamp1Light.intensity = 3 + pulse1 + pulse2 + pulse3;
+  lamp2Light.intensity = 2 + pulse1 + pulse2 + pulse3;
+  lamp3Light.intensity = 2 + pulse1 + pulse2 + pulse3;
 
   // Update controls
   controls.update();
