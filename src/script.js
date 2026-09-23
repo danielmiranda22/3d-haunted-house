@@ -1011,6 +1011,12 @@ const ghostSynth = new Tone.MonoSynth({
 // Vibrato drastically reduced (only a slight cold tremor)
 new Tone.LFO(6, -15, 15).start().connect(ghostSynth.oscillator.detune);
 
+// Load Wolf sound
+const wolfPlayer = new Tone.Player({
+  url: "/sounds/wolf.mp3",
+  autostart: false,
+}).connect(volumeNode);
+
 // 3. Altered melody: Lower notes (Octave 3) and more dissonant and mournful intervals.
 const notes = [
   "C3",
@@ -1032,9 +1038,17 @@ const notes = [
 ];
 
 // 4. Loop sequencer (a little slower at 95 BPM)
+let noteIndex = 0;
 const seq = new Tone.Sequence(
   (time, note) => {
     if (note) ghostSynth.triggerAttackRelease(note, "4n", time);
+
+    if (noteIndex === 0 && wolfPlayer.loaded) {
+      wolfPlayer.start(time);
+    }
+
+    // Update note index (goes from 0 to 15 and back to 0)
+    noteIndex = (noteIndex + 1) % notes.length;
   },
   notes,
   "4n",
